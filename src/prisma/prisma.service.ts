@@ -7,7 +7,7 @@ export class PrismaService extends PrismaClient {
     super({
       datasources: {
         db: {
-          url: process.env.POSTGRES_PRISMA_URL,
+          url: process.env.POSTGRES_URL,
         },
       },
       errorFormat: 'pretty',
