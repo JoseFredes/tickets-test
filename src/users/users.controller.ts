@@ -6,17 +6,18 @@ import { User } from '@prisma/client';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  //route example GET localhost:3000/users
   @Get()
   async getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
   }
 
-  @Get('/userid')
+  //route example GET localhost:3000/users/3
+  @Get('/:id')
   async getUserById(@Param('id') id: number): Promise<User> {
-    console.log(id);
-    return this.usersService.getUserById(id);
+    return this.usersService.getUserById(Number(id));
   }
-  //route example localhost:3000/users/3
+  //route example DELETE localhost:3000/users/3
   @Delete('/:id')
   async deleteUserById(@Param('id') id: number): Promise<User | null> {
     return this.usersService.deleteUserById(Number(id));
