@@ -15,4 +15,13 @@ export class UsersService {
       where: { id },
     });
   }
+
+  async deleteUserById(id: number): Promise<User | null> {
+    console.log(id);
+    if (id === undefined) throw new Error('Invalid id');
+
+    return this.prisma.user.delete({
+      where: { id },
+    });
+  }
 }
