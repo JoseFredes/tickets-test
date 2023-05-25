@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Controller('users')
 export class UsersController {
@@ -24,8 +32,18 @@ export class UsersController {
     return this.usersService.deleteUserById(Number(id));
   }
 
+  //route example POST  localhost:3000/users/create
   @Post('/create')
   async createUser(@Body() dto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(dto);
+  }
+
+  //route example PUT   localhost:3000/users/update/6
+  @Put('/update/:id')
+  async updateUser(
+    @Param('id') id: number,
+    @Body() dto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.updateUser(Number(id), dto);
   }
 }
