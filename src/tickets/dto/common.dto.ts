@@ -28,3 +28,22 @@ export class CreateTicketDto {
   @IsNumber()
   author: number;
 }
+
+export class UpdateTicketDto {
+  @IsOptional()
+  @IsString()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  description: string;
+
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsEmail()
+  @IsString()
+  email: string;
+}
