@@ -14,7 +14,6 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   authoredTickets    Ticket[] @relation("TicketAuthor")
-  responsibleTickets Ticket[] @relation("TicketResponsible")
 }
 
 model Ticket {
@@ -22,19 +21,10 @@ model Ticket {
   title         String
   description   String?
   authorId      Int?
-  responsibleId Int?
-  status        status    @default(OPEN)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
   email         String
   name          String
   author        User?     @relation("TicketAuthor", fields: [authorId], references: [id])
-  responsible   User?     @relation("TicketResponsible", fields: [responsibleId], references: [id])
-}
-
-enum status {
-  OPEN
-  IN_PROGRESS
-  DONE
 }
