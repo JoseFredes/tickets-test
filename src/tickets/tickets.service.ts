@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Ticket } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTicketDto, UpdateTicketDto } from './dto';
@@ -13,18 +17,26 @@ export class TicketsService {
   }
 
   async getTicketById(id: number): Promise<Ticket> {
-    return this.prisma.ticket.findUnique({
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
+    const ticket = this.prisma.ticket.findUnique({
       where: { id },
     });
+
+    if (!ticket) throw new NotFoundException('Ticket not found');
+
+    return ticket;
   }
 
   async createTicket(data: CreateTicketDto): Promise<Ticket> {
     const author = await this.prisma.user.findUnique({
       where: { id: data.author },
     });
-    if (!author) throw new Error('No author found');
 
-    if (!validateEmail(data.email)) throw new Error('Invalid email');
+    if (!author) throw new NotFoundException('Author not found');
+
+    if (!validateEmail(data.email))
+      throw new BadRequestException('Invalid email');
     return this.prisma.ticket.create({
       data: {
         title: data.title,
@@ -41,28 +53,31 @@ export class TicketsService {
   }
 
   async updateTicket(id: number, dto: UpdateTicketDto): Promise<Ticket> {
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
     const ticket = await this.prisma.ticket.findUnique({
       where: { id },
     });
 
-    if (!ticket) throw new Error('Ticket not found');
+    if (!ticket) throw new NotFoundException('Ticket not found');
 
-    if (!validateEmail(dto.email)) throw new Error('Invalid email');
+    if (!validateEmail(dto.email))
+      throw new BadRequestException('Invalid email');
 
     if (
-      ticket.email === dto.email &&
-      ticket.name === dto.name &&
       ticket.title == dto.title &&
-      ticket.description == dto.description
+      ticket.description == dto.description &&
+      ticket.email === dto.email &&
+      ticket.name === dto.name
     )
-      throw new Error('Nothing to update');
+      throw new BadRequestException('Nothing to update');
 
     const ticketToEdit = {
       title: ticket.title === dto.name ? ticket.title : dto.title,
       description:
         ticket.description === dto.name ? ticket.description : dto.description,
-      email: ticket.email === dto.email ? ticket.email : dto.email,
       name: ticket.name === dto.name ? ticket.name : dto.name,
+      email: ticket.email === dto.email ? ticket.email : dto.email,
     };
 
     return this.prisma.ticket.update({
@@ -77,8 +92,14 @@ export class TicketsService {
   }
 
   async deleteTicketById(id: number): Promise<Ticket> {
-    return this.prisma.ticket.delete({
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
+    const ticketToDelete = this.prisma.ticket.delete({
       where: { id },
     });
+
+    if (!ticketToDelete) throw new NotFoundException('Ticket not found');
+
+    return ticketToDelete;
   }
 }

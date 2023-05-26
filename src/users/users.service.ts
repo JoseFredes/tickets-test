@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
@@ -12,9 +16,15 @@ export class UsersService {
   }
 
   async getUserById(id: number): Promise<User> {
-    return this.prisma.user.findUnique({
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
+    const user = this.prisma.user.findUnique({
       where: { id },
     });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
@@ -26,28 +36,21 @@ export class UsersService {
     });
   }
 
-  async deleteUserById(id: number): Promise<User | null> {
-    console.log(id);
-    if (id === undefined) throw new Error('Invalid id');
-
-    return this.prisma.user.delete({
-      where: { id },
-    });
-  }
-
   async updateUser(id: number, dto: UpdateUserDto): Promise<User> {
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
 
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundException('User not found');
 
     if (user.email === dto.email && user.name === dto.name)
-      throw new Error('Nothing to update');
+      throw new BadRequestException('Nothing to update');
 
     const userToEdit = {
-      email: user.email === dto.email ? user.email : dto.email,
       name: user.name === dto.name ? user.name : dto.name,
+      email: user.email === dto.email ? user.email : dto.email,
     };
 
     return this.prisma.user.update({
@@ -57,5 +60,17 @@ export class UsersService {
         name: userToEdit.name,
       },
     });
+  }
+
+  async deleteUserById(id: number): Promise<User> {
+    if (id === undefined) throw new BadRequestException('Invalid id');
+
+    const userToDelete = this.prisma.user.delete({
+      where: { id },
+    });
+
+    if (!userToDelete) throw new NotFoundException('User to delete not found');
+
+    return userToDelete;
   }
 }
