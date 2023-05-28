@@ -12,33 +12,82 @@ import {
 import { TicketsService } from './tickets.service';
 import { Ticket } from '@prisma/client';
 import { CreateTicketDto, UpdateTicketDto } from './dto';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tickets')
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
-
-  //route example PUT localhost:3000/tickets/update/6
+  @ApiResponse({
+    status: 200,
+    description: 'Get all tickets',
+  })
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAllTickets(): Promise<Ticket[]> {
     return this.ticketsService.getAllTickets();
   }
 
-  //route example GET localhost:3000/tickets/1
+  @ApiResponse({
+    status: 200,
+    description: 'Get ticket by id',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Ticket not found',
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async getTicketById(@Param('id') id: number): Promise<Ticket> {
     return this.ticketsService.getTicketById(Number(id));
   }
 
-  //route example POST localhost:3000/tickets/create
+  @ApiResponse({
+    status: 200,
+    description: 'Create ticket',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid data',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid email',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Author not found',
+  })
   @Post('/create')
   @HttpCode(HttpStatus.OK)
   async createUser(@Body() dto: CreateTicketDto): Promise<Ticket | null> {
     return this.ticketsService.createTicket(dto);
   }
 
-  //route example POST localhost:3000/tickets/update/6
+  @ApiResponse({
+    status: 200,
+    description: 'Update ticket',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid data',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid email',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Ticket not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Nothing to update',
+  })
   @Put('/update/:id')
   @HttpCode(HttpStatus.OK)
   async updateTicket(
@@ -48,7 +97,18 @@ export class TicketsController {
     return this.ticketsService.updateTicket(Number(id), dto);
   }
 
-  //route example DELETE  localhost:3000/tickets/1
+  @ApiResponse({
+    status: 200,
+    description: 'Delete ticket',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Ticket not found',
+  })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async deleteTicketById(@Param('id') id: number): Promise<Ticket | null> {

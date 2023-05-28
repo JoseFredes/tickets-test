@@ -6,6 +6,7 @@ import {
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { validateEmail } from 'src/utils/emailValidator';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,11 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
+    if (!dto) throw new BadRequestException('Invalid data');
+
+    if (!validateEmail(dto.email))
+      throw new BadRequestException('Invalid email');
+
     return this.prisma.user.create({
       data: {
         email: dto.email,
@@ -39,14 +45,20 @@ export class UsersService {
   async updateUser(id: number, dto: UpdateUserDto): Promise<User> {
     if (id === undefined) throw new BadRequestException('Invalid id');
 
+    if (!dto) throw new BadRequestException('Invalid data');
+
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
 
+    if (!validateEmail(dto.email))
+      throw new BadRequestException('Invalid email');
+
     if (!user) throw new NotFoundException('User not found');
 
-    if (user.email === dto.email && user.name === dto.name)
-      throw new BadRequestException('Nothing to update');
+    const validateChanges = user.email === dto.email && user.name === dto.name;
+
+    if (validateChanges) throw new BadRequestException('Nothing to update');
 
     const userToEdit = {
       name: user.name === dto.name ? user.name : dto.name,

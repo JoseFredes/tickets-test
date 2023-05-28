@@ -29,6 +29,8 @@ export class TicketsService {
   }
 
   async createTicket(data: CreateTicketDto): Promise<Ticket> {
+    if (!data) throw new BadRequestException('Invalid data');
+
     const author = await this.prisma.user.findUnique({
       where: { id: data.author },
     });
@@ -55,6 +57,8 @@ export class TicketsService {
   async updateTicket(id: number, dto: UpdateTicketDto): Promise<Ticket> {
     if (id === undefined) throw new BadRequestException('Invalid id');
 
+    if (!dto) throw new BadRequestException('Invalid data');
+
     const ticket = await this.prisma.ticket.findUnique({
       where: { id },
     });
@@ -64,13 +68,13 @@ export class TicketsService {
     if (!validateEmail(dto.email))
       throw new BadRequestException('Invalid email');
 
-    if (
+    const validateChanges =
       ticket.title == dto.title &&
       ticket.description == dto.description &&
       ticket.email === dto.email &&
-      ticket.name === dto.name
-    )
-      throw new BadRequestException('Nothing to update');
+      ticket.name === dto.name;
+
+    if (validateChanges) throw new BadRequestException('Nothing to update');
 
     const ticketToEdit = {
       title: ticket.title === dto.name ? ticket.title : dto.title,

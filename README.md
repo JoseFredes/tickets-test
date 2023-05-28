@@ -45,6 +45,26 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Prisma
+
+```bash
+# generate prisma client
+$ npx prisma generate
+
+# rollback
+$ npx prisma migrate rollback
+
+# generate migration
+$ npx prisma migrate dev --name init
+
+# apply all migrations
+$ npx prisma migrate deploy
+
+# pull db schema
+
+$ npx prisma db pull
+```
+
 ## Test
 
 ```bash
