@@ -1,3 +1,5 @@
+/* The UsersService class provides methods for CRUD operations on user data using a Prisma ORM and
+email validation. */
 import {
   BadRequestException,
   Injectable,

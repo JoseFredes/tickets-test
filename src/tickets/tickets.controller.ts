@@ -1,3 +1,5 @@
+/* This is a NestJS controller class for managing CRUD operations on tickets, with Swagger API
+documentation. */
 import {
   Body,
   Controller,

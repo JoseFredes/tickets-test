@@ -1,3 +1,6 @@
+/* This is a TypeScript class that defines two DTOs (CreateUserDto and UpdateUserDto) with properties
+for email and name, validated using class-validator and documented using ApiProperty from NestJS
+Swagger. */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 

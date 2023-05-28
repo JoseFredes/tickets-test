@@ -1,3 +1,5 @@
+/* The TicketsService class provides methods for CRUD operations on Ticket objects using a Prisma ORM
+and email validation. */
 import {
   BadRequestException,
   Injectable,

@@ -1,3 +1,4 @@
+/* This is a NestJS controller that returns the status of a backend service. */
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 

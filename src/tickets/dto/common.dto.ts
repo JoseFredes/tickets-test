@@ -1,3 +1,5 @@
+/* This is a TypeScript class that defines the data transfer objects (DTOs) for creating and updating a
+ticket, with validation using class-validator and Swagger documentation using ApiProperty. */
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,

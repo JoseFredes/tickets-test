@@ -26,6 +26,12 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+### For running the app you can execute npm install, after these you need to create a .env based in .env example.
+
+### The second step is run pisma client, in the prisma commands you need execute the first command and third, this command run migrations.
+
+### The prod url is "https://app-knlejw27ka-uc.a.run.app" for view the API docs in swagger you can visit "https://app-knlejw27ka-uc.a.run.app/api/docs"
+
 ## Installation
 
 ```bash

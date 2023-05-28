@@ -1,3 +1,5 @@
+/* This is a NestJS controller class for handling CRUD operations on user data with Swagger API
+documentation. */
 import {
   Body,
   Controller,

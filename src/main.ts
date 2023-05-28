@@ -1,3 +1,6 @@
+/**
+ * The function creates a NestJS application and sets up Swagger documentation for a Tickets API.
+ */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { env } from 'process';
